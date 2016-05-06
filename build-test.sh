@@ -70,8 +70,9 @@ if [ -f "$output" ]; then
       testData=$(cat $testFile)   # this iteration's test file
       echo "Input"
       echo "$testData"
+
       echo -e "\nOutput"
-      eval "./$output <<< $testData"
+      eval "./$output" <<< $testData
       echo ""
       echo $hr
 
