@@ -13,7 +13,7 @@ I recommend that you create a symbolic link of this script to `/usr/local/bin/bu
 ~~~~
 sudo ln -s /path/to/build-test.sh /usr/local/bin/build-test
 ~~~~
-Now you can run this script anywhere by running the command `build-test`. But you may need give the script permission to execute, so in that case:
+Now you can run this script anywhere by running the command `build-test`. But you may need to give the script permission to execute, so in that case:
 ~~~~
 sudo chmod a+x /usr/local/bin/build-test
 ~~~~
