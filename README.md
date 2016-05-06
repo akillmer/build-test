@@ -22,13 +22,13 @@ Using the script
 -----
 So far all of my coding on a per-assignment basis has been contained within a single C++ file. The behavior of this script represents that.
 
-You'll need to be in the current working directory of the code that you want to build and test. When you run the script it will compile the first `.cpp` or `.cc` file it finds. *You will have to modify the script to compile C programs.*
+You'll need to be in the current working directory of the code that you want to build and test. When you run the script it will compile the first `.cpp` or `.cc` file it finds. *You will have to modify the script to compile C programs (see default compiler below).*
 
 If there are no test data files passed as arguments to the script then your program executes and it's business as usual.
 
 Providing test input data files
 -----
-Individual test cases should be within its own text file in the same directory of the code that you are testing. Each line from this text file is sent to your program as input.
+Individual test cases should be within its own text file in the same directory of the code that you are testing. Each line from this text file is sent to your program as input. For example, if your program expects two `int` values via `std::cin`, then your text file will have those two values on separate lines.
 ~~~~
 build-test test0.txt test1.txt test2.txt ...
 ~~~~
