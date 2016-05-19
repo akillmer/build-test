@@ -1,30 +1,15 @@
 #!/bin/bash
-
 # build-test.sh | https://github.com/mix-plate/build-test
-# I wrote this script to help facilitate the building and testing of
-# solutions to satisfy coursework at Coursera. I am complete noob when
-# it comes to shell scripting, so any guidance is appreciated.
+# I know this script could use a lot of improvement, so please
+# feel free to contribute! Thanks!
 
-# This shell script should be executed in the directory that contains a
-# single C++ source file, being your solution that you want to build and
-# test. The compiler will output the program with the same name as the
-# source file, then the script will execute the program.
-
-# Test data can be passed to this script so that you can build, run,
-# and test your solution with convenience. Each set of test data must
-# be in its own text file, e.g. 'test0.txt', 'test1.txt', etc.
-# Run the script with the filename(s): ./build-test.sh test0.txt test1.txt
-
-# personally, I prefer starting with a clean slate
-clear
+clear # personally, I prefer starting with a clean slate
 
 # find a C++ (.cpp or .cc) file to compile for this build-test run
 file=$(find ./ -maxdepth 1 -name '*.c*')
-# may be better if the script expects a source file to always be specified,
-# but for now this works for me (how about for you?)
 
 if [ -z "$file" ]; then
-  echo "No C++ source file found in this directory."
+  echo "No compilable source file found in this directory."
   exit 1
 fi
 
@@ -33,26 +18,26 @@ fi
 file=$(basename $file) # now it's 'source.cpp'
 
 # drop the file extension, this will be the name of the compiled program
-output=$(echo $file | cut -f 1 -d '.')
+program=$(echo $file | cut -f 1 -d '.')
 
-# remove any pre-existing program with the same name as $output
-rm $output 2> /dev/null  # suppress any warning messages if not found
+# remove any pre-existing program with the same name as $program
+rm $program 2> /dev/null  # suppress any warning messages if not found
 
 echo "Compiling $file..."
-$(g++ -pipe -O2 -std=c++11 -o $output "./$file")
+$(g++ -pipe -O2 -std=c++11 -o $program "./$file")
 # I use these settings because that's what my current course requires
 
-# if $output now exists then it was compiled successfully
-if [ -f "$output" ]; then
+# if $program now exists then it was compiled successfully
+if [ -f "$program" ]; then
   hr="--------------------------------------------------------"
   clear
 
   # if there are no tests to run, so just run the program then exit
   if [ $# -eq 0 ]; then
-    echo "Manually testing: $output"
+    echo "Manually testing: $program"
     echo $hr
     echo "Provide input test data to continue..."
-    eval "./$output"
+    eval "./$program"
     echo ""
     exit 0
   else
@@ -64,16 +49,41 @@ if [ -f "$output" ]; then
     do
       testNum=$((testNum+1))
       # simple header for this current test
-      echo -e "$testNum / $# :: $testFile :: $output"
+      echo -e "$testNum / $# :: $testFile :: $program"
       echo $hr
 
-      testData=$(cat $testFile)   # this iteration's test file
-      echo "Input"
-      echo "$testData"
+      inputFile="$testFile.input"
+      outputFile="$testFile.output"
 
-      echo -e "\nOutput"
-      eval "./$output" <<< $testData
+      if [ ! -f $inputFile ]; then
+        echo "$inputFile not found"
+        exit 0
+      fi
+
+      inputData=$(cat "$inputFile")   # this iteration's test input data
+      result=$(eval "./$program" <<< $inputData)
+
+      echo "Test Input:"
+      echo "$inputData"
+
+      echo -e "\nYour Output:"
+      echo "$result"
       echo ""
+
+      # is there a correspanding $testFile.output to results to?
+      if [ -f $outputFile ]; then
+        # compare program output to $outputFile
+        diffResults=$(diff $outputFile <(echo "$result"))
+
+        if [ "$diffResults" != "" ]; then
+          # contents are not the same
+          echo "FAILED, expected output:"
+          echo "$(cat "$outputFile")"
+        else
+          echo "PASSED, good job!"
+        fi
+      fi
+
       echo $hr
 
       # this is the last iteration, so break early (skip the next message)
