@@ -1,5 +1,5 @@
 build-test.sh
-=======
+========
 
 This is a simple bash script (my first, actually) to help automate building and testing simple programs written in C++. I've been using this for a series of assignments over at Coursera. Currently, as I'm focusing on C++, the compiler is set to `g++ -pipe -O2 -std=c++11`, this is at line 27.
 
